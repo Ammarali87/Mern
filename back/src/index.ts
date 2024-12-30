@@ -10,9 +10,11 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
   res.send('i hate node js dame  !');
 });
+    
+// get to create api 
 
  // A more complex route
-app.get('/kofta', (req: Request, res: Response) => {
+app.get('/api/greet', (req: Request, res: Response) => {
   const name = req.query.name || 'Stranger';
   res.json({ message: `Hello, ${name}!` });
 });
