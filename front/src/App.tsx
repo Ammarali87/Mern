@@ -1,11 +1,11 @@
 import './App.css'
 
 function App() {
-
+  console.log('App')
   return (
     <>
-      <div>
-          <h2 className='bg-yellow-400 max-w-2xl'> Amazon </h2>         
+      <div className='bg-blue-400 flex max-w-2xl'>
+          <h2 className='bg-yellow-400 '> Amazon </h2>         
       </div>
     </>
   )
