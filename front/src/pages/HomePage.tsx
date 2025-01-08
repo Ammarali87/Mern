@@ -8,21 +8,26 @@ import { ApiError } from '../types/ApiError'
 import { getError } from '../utils'
 
 export default function HomePage() {
-  const { data: products, isLoading, error } = useGetProductsQuery()
-  return isLoading ? (
-    <LoadingBox />
-  ) : error ? (
-    <MessageBox variant="danger">{getError(error as ApiError)}</MessageBox>
-  ) : (
-    <Row>
-      <Helmet>
-        <title>TS Amazona</title>
-      </Helmet>
-      {products!.map((product) => (
-        <Col key={product.slug} sm={6} md={4} lg={3}>
-          <ProductItem product={product} />
-        </Col>
-      ))}
-    </Row>
-  )
+  // const { data: products, isLoading, error } = useGetProductsQuery()
+    return (
+      <div>
+        <h2>HomePage</h2>
+      </div>
+    )
+  //  return isLoading ? (
+  //   <LoadingBox />
+  // ) : error ? (
+  //   <MessageBox variant="danger">{getError(error as ApiError)}</MessageBox>
+  // ) : (
+  //   <Row>
+  //     <Helmet>
+  //       <title>TS Amazona</title>
+  //     </Helmet>
+  //     {products!.map((product) => (
+  //       <Col key={product.slug} sm={6} md={4} lg={3}>
+  //         <ProductItem product={product} />
+  //       </Col>
+  //     ))}
+  //   </Row>
+  // )
 }
