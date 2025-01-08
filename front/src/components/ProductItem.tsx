@@ -1,7 +1,7 @@
 
 import { useContext } from 'react'
 import { Button, Card } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Links } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Store } from '../Store'
 import { CartItem } from '../types/Cart'
