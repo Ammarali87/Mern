@@ -1,9 +1,9 @@
 import { Col, Row } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
-import LoadingBox from '../components/LoadingBox'
+import LoadingBox from '../components/LoadingBox.tsx'
 import MessageBox from '../components/MessageBox.tsx'
-import ProductItem from '../components/ProductItem'
-import { useGetProductsQuery } from '../hooks/productHooks'
+import ProductItem from '../components/ProductItem.tsx'
+import { useGetProductsQuery } from '../hooks/productHooks.ts'
 import { ApiError } from '../types/ApiError'
 import { getError } from '../utils'
 
