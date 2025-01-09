@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Simple route to check the server
 app.get('/', (req: Request, res: Response) => {
-  res.send('i hate node js dame  !');
+  res.send('i love Sudan !');
 });
     
 // get to create api 
