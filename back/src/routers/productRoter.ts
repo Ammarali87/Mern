@@ -7,7 +7,7 @@ export const productRouter = express.Router()
 // /api/prodcuts
 productRouter.get(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const products = await ProductModel.find()
     res.json(products)
   })
