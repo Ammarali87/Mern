@@ -12,7 +12,7 @@ export default function ProductItem({ product }: { product: Product }) {
           className="card-img-top"
           alt={product.title}
           style={{ objectFit: "cover", height: "200px" }}
-        />
+        />  
       </Link>
       <Card.Body>
         <Link to={`/products/${product.id}`}>
