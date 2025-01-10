@@ -22,7 +22,7 @@ export default function ProductPage() {
     const existItem = cart.cartItems.find((x) => x._id === product!._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
-    if (product!.countInStock < quantity) {
+    if (product!.rating.count < quantity) {
       toast.warn("Sorry, product is out of stock");
       return;
     }
@@ -90,7 +90,7 @@ export default function ProductPage() {
                 <Row>
                   <Col><strong>Status:</strong></Col>
                   <Col>
-                    {product.countInStock > 0 ? (
+                    {product.rating.count > 0 ? (
                       <Badge bg="success">In Stock</Badge>
                     ) : (
                       <Badge bg="danger">Unavailable</Badge>
@@ -98,7 +98,7 @@ export default function ProductPage() {
                   </Col>
                 </Row>
               </ListGroup.Item>
-              {product.countInStock > 0 && (
+              {product.rating.count > 0 && (
                 <ListGroup.Item className="text-center">
                   <Button
                     onClick={addToCartHandler}

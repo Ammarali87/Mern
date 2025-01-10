@@ -1,5 +1,6 @@
 
 export type Product = {
+    count: number
     id: Key | null | undefined
     _id: string
     name: string
