@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     element: <h1>Dashboard</h1>,
   },
 ]);
-
+in
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HelmetProvider>

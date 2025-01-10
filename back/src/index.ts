@@ -1,25 +1,54 @@
-import express, { Request, Response } from 'express';
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express, { Request, Response } from 'express'
+import mongoose from 'mongoose'
+import path from 'path'
+import { keyRouter } from "./routs/keyRoute"
+import { orderRouter } from './routs/orderRoute'
+import { productRouter } from './routs/productRoute'
+import { seedRouter } from './routs/seedRoute'
+import { userRouter } from './routs/userRoute'
 
-const app = express();
-const port = 3000;
+// put env in parent folder
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+dotenv.config()
 
-// Simple route to check the server
-app.get('/', (req: Request, res: Response) => {
-  res.send('i love Sudan !');
-});
-    
-// get to create api 
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost/tsmernamazonadb'
+mongoose.set('strictQuery', true)
+mongoose  
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to mongodb')
+  })
+  .catch(() => {
+    console.log('error mongodb')
+  })
 
- // A more complex route
-app.get('/api/greet', (req: Request, res: Response) => {
-  const name = req.query.name || 'Stranger';
-  res.json({ message: `Hello, ${name}!` });
-});
+const app = express()
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:5173'],
+  })
+)
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use('/api/products', productRouter)
+app.use('/api/users', userRouter)
+app.use('/api/orders', orderRouter)
+app.use('/api/seed', seedRouter)
+app.use('/api/keys', keyRouter)
+
+app.use(express.static(path.join(__dirname, '../../front')))
+app.get('*', (req: Request, res: Response) =>
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'))
+)
+
+const PORT: number = parseInt((process.env.PORT || '4000') as string, 10)
+
+app.listen(PORT, () => {
+  console.log(`server started at http://localhost:${PORT}`)
+})

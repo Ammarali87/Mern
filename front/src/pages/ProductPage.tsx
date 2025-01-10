@@ -19,6 +19,7 @@ export default function ProductPage() {
   const navigate = useNavigate();
 
   const addToCartHandler = () => {
+    alert("Add to Cart");
     const existItem = cart.cartItems.find((x) => x._id === product!._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
@@ -32,8 +33,8 @@ export default function ProductPage() {
       payload: { ...convertProductToCartItem(product!), quantity },
     });
     toast.success("Product added to cart");
-    navigate("/cart");
-  };
+    // navigate("/cart");
+  };  
 
   if (isLoading) return <LoadingBox />;
   if (error)
