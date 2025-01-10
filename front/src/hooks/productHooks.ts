@@ -9,11 +9,11 @@ export const useGetProductsQuery = () =>
     queryFn: async () => (await apiClient.get<Product[]>(`products`)).data,
   })
 
-export const useGetProductDetailsBySlugQuery = (slug: string) =>
+export const useGetProductDetailsBySlugQuery = (id: string) =>
   useQuery({
-    queryKey: ['products', slug],
+    queryKey: ['products', id],
     queryFn: async () =>
-      (await apiClient.get<Product>(`/products/slug/${slug}`)).data,
+      (await apiClient.get<Product>(`/products/${id}`)).data,
   })
 
 export const useGetCategoriesQuery = () =>
@@ -22,3 +22,9 @@ export const useGetCategoriesQuery = () =>
     queryFn: async () =>
       (await apiClient.get<[]>(`/products/categories`)).data,
   })
+
+
+
+
+
+  

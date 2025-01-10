@@ -1,18 +1,13 @@
-import './App.css'
-import Donkey from './pages/Donkey'
-import HomePage from './pages/HomePage'
+import { Outlet } from "react-router-dom";
 
 function App() {
-  console.log('App')
   return (
-    <>
-      <div className='bg-blue-400 flex max-w-2xl'>
-          <h2 className='bg-yellow-400 '> Amazon kodddk </h2>         
-          <Donkey/>
-          <HomePage/>
-      </div>
-    </>
-  )
+    <div>
+      <h1 className="text-center mt-4">Amazon</h1>
+      {/* Nested routes will render here */}
+      <Outlet />
+    </div>
+  );
 }
 
-export default App
+export default App;
