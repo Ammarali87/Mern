@@ -16,7 +16,7 @@ export default function ProductPage() {
   const { data: product, isLoading, error } = useGetProductDetailsBySlugQuery(id!);
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const addToCartHandler = () => {
     alert("Add to Cart");
