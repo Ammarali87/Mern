@@ -3,9 +3,9 @@ import dotenv from 'dotenv'
 import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import path from 'path'
-import { keyRouter } from "./routs/keyRoute"
-import { orderRouter } from './routs/orderRoute'
-import { productRouter } from './routs/productRoute'
+// import { keyRouter } from "./routs/keyRoute"
+// import { orderRouter } from './routs/orderRoute'
+// import { productRouter } from './routs/productRoute'
 import { seedRouter } from './routs/seedRoute'
 import { userRouter } from './routs/userRoute'
 
@@ -36,11 +36,11 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/api/products', productRouter)
-app.use('/api/users', userRouter)
-app.use('/api/orders', orderRouter)
+// app.use('/api/products', productRouter)
+// app.use('/api/users', userRouter)
+// app.use('/api/orders', orderRouter)
 app.use('/api/seed', seedRouter)
-app.use('/api/keys', keyRouter)
+// app.use('/api/keys', keyRouter)
 
 app.use(express.static(path.join(__dirname, '../../front')))
 app.get('*', (req: Request, res: Response) =>
