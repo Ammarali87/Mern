@@ -6,6 +6,7 @@ const getLocalStorage = (key: string, defaultValue: any) => {
   const stored = localStorage.getItem(key);
   return stored ? JSON.parse(stored) : defaultValue;
 };
+  // state value to one item = localStorage
 
 const initialState: Cart = {
   cartItems: getLocalStorage('cartItems', []),

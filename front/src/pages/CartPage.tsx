@@ -6,34 +6,45 @@ import MessageBox from '../components/MessageBox'
 import { CartItem } from '../types/Cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
-
+import { addItem, removeItem } from '../store/slices/cartSlice'
 
 export default function CartPage() {
-
-//   const { data: product, isLoading, error } = useGetProductDetailsBySlugQuery(id!);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
- 
+
   const updateCartHandler = (item: CartItem, quantity: number) => {
-    if (item.countInStock < quantity) {
-      toast.warn('Sorry. Product is out of stock')
-      return
+    try {
+      if (quantity < 1) {
+        toast.warn('Quantity must be at least 1');
+        return;
+      }
+
+      if (quantity > item.countInStock) {
+        toast.warn(`Sorry, only ${item.countInStock} items available`);
+        return;
+      }
+
+      dispatch(addItem({ ...item, quantity }));
+    } catch (error) {
+      toast.error('Failed to update cart');
     }
-    dispatch({
-      type: 'CART_ADD_ITEM',
-      payload: { ...item, quantity },
-    })
   }
-  const navigate = useNavigate();
+
+  const removeItemHandler = (item: string) => {
+    try {
+      dispatch(removeItem(item));
+      toast.success('Item removed from cart');
+    } catch (error) {
+      toast.error('Failed to remove item');
+    }
+  }
+
   const checkoutHandler = () => {
-    navigate('/signin?redirect=/shipping')
-  }  
-  const removeItemHandler = (item: CartItem) => {
-    dispatch({ type: 'CART_REMOVE_ITEM', payload: item })
+    navigate('/signin?redirect=/shipping');
   }
-
-
-
+  
+  // ...rest of your component code
   return (
     <div>
       <Helmet>

@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserInfo } from '../../types/UserInfo';
-
-const initialState: UserInfo | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
+  // state value to one item = localStorage
+const initialState: UserInfo | null
+ = JSON.parse(localStorage.getItem('userInfo') || 'null');
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    signIn: (state, action: PayloadAction<UserInfo>) => {
+    signIn: (_, action: PayloadAction<UserInfo>) => {
       localStorage.setItem('userInfo', JSON.stringify(action.payload));
       return action.payload;
     },

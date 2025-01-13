@@ -10,6 +10,7 @@ import { convertProductToCartItem, getError } from "../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { toast } from "react-toastify";
+import { addItem } from '../store/slices/cartSlice' // Add this import
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -19,22 +20,18 @@ export default function ProductPage() {
   // const navigate = useNavigate();
 
   const addToCartHandler = () => {
-    alert("Add to Cart");
     const existItem = cart.cartItems.find((x) => x._id === product!._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-
+  
     if (product!.rating.count < quantity) {
       toast.warn("Sorry, product is out of stock");
       return;
     }
-
-    dispatch({
-      type: "CART_ADD_ITEM",
-      payload: { ...convertProductToCartItem(product!), quantity },
-    });
+  
+    // Replace string-based dispatch with action creator
+    dispatch(addItem({ ...convertProductToCartItem(product!), quantity }));
     toast.success("Product added to cart");
-    // navigate("/cart");
-  };  
+  }
 
   if (isLoading) return <LoadingBox />;
   if (error)
