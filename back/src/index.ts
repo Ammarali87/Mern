@@ -5,7 +5,7 @@ import mongoose from 'mongoose'
 import path from 'path'
 // import { keyRouter } from "./routs/keyRoute"
 // import { orderRouter } from './routs/orderRoute'
-// import { productRouter } from './routs/productRoute'
+import { productRouter } from './routs/prodcutRoute'
 import { seedRouter } from './routs/seedRoute'
 import { userRouter } from './routs/userRoute'
 
@@ -36,15 +36,15 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// app.use('/api/products', productRouter)
-// app.use('/api/users', userRouter)
+app.use('/api/products', productRouter)
+app.use('/api/users', userRouter)
 // app.use('/api/orders', orderRouter)
 app.use('/api/seed', seedRouter)
 // app.use('/api/keys', keyRouter)
 
 app.use(express.static(path.join(__dirname, '../../front')))
 app.get('*', (req: Request, res: Response) =>
-  res.sendFile(path.join(__dirname, '../../frontend/index.html'))
+  res.sendFile(path.join(__dirname, '../../front'))
 )
 
 const PORT: number = parseInt((process.env.PORT || '4000') as string, 10)
