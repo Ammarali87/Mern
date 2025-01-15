@@ -10,7 +10,7 @@ import store from "./store/store.ts";
 import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import SignIn from "./pages/SignIn.tsx";
-import SignUp from "./pages/SignIn.tsx";
+import SignUp from "./pages/SignUp.tsx";
 import CartPage from "./pages/CartPage.tsx";
 
 const queryClient = new QueryClient();

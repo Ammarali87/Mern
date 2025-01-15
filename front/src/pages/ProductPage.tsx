@@ -23,8 +23,9 @@ export default function ProductPage() {
     const existItem = cart.cartItems.find((x) => x._id === product!._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
   
-    if (product!.rating.count < quantity) {
+    if (product!.count < quantity) {
       toast.warn("Sorry, product is out of stock");
+    alert('Product added to cart');
       return;
     }
   
@@ -64,8 +65,8 @@ export default function ProductPage() {
             <h2>{product.name}</h2>
           </ListGroup.Item>
           <ListGroup.Item>
-            <Rating  rating={product.rating.rate}
-          numReviews={product.rating.count}  />
+            <Rating  rating={product.rating}
+          numReviews={product.count}  />
           </ListGroup.Item>
           <ListGroup.Item>
             <strong>Price:</strong> ${product.price}
@@ -89,7 +90,7 @@ export default function ProductPage() {
                 <Row>
                   <Col><strong>Status:</strong></Col>
                   <Col>
-                    {product.rating.count > 0 ? (
+                    {product.count > 0 ? (
                       <Badge bg="success">In Stock</Badge>
                     ) : (
                       <Badge bg="danger">Unavailable</Badge>
@@ -97,14 +98,14 @@ export default function ProductPage() {
                   </Col>
                 </Row>
               </ListGroup.Item>
-              {product.rating.count > 0 && (
+              {product.count > 0 && (
                 <ListGroup.Item className="text-center">
                   <Button
                     onClick={addToCartHandler}
                     variant="primary"
                     className="w-100"
                   >
-                    Add to Cart
+                add to cart
                   </Button>
                 </ListGroup.Item>
               )}
@@ -115,3 +116,14 @@ export default function ProductPage() {
     </Row>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
