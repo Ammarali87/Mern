@@ -8,6 +8,13 @@ const apiClient = axios.create({
     'Content-type': 'application/json',
   },
 })
+ export  const apiClient2 = axios.create({
+  baseURL:
+    process.env.NODE_ENV === 'development' ? 'https://ecommerce.routemisr.com/' : '/',
+  headers: {
+    'Content-type': 'application/json',
+  },
+})
 
 apiClient.interceptors.request.use(
   async (config) => {

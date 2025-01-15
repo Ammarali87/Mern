@@ -1,6 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
-import apiClient from "../ApiClient"
+import {apiClient2} from "../ApiClient"
 import { UserInfo } from '../types/UserInfo'
+ 
+const api = apiClient2
 
 export const useSigninMutation = () =>
   useMutation({
@@ -12,7 +14,7 @@ export const useSigninMutation = () =>
       password: string
     }) =>
       (             
-        await apiClient.post<UserInfo>(`api/v1/auth/signin`, {
+        await api.post<UserInfo>(`api/v1/auth/signin`, {
           email,
           password,
         })
@@ -31,7 +33,7 @@ export const useSignupMutation = () =>
       password: string
     }) =>
       (
-        await apiClient.post<UserInfo>(`api/v1/auth/signup`, {
+        await api.post<UserInfo>(`api/v1/auth/signup`, {
           name,
           email,
           password,
@@ -52,7 +54,7 @@ export const useUpdateProfileMutation = () =>
     }) =>
        // this need to phone no pa
       (
-        await apiClient.put<UserInfo>(`api/v1/users/updateMe/`, {
+        await api.put<UserInfo>(`api/v1/users/updateMe/`, {
           name,
           email,
           password,
