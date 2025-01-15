@@ -12,13 +12,13 @@ export const useSigninMutation = () =>
       password: string
     }) =>
       (             
-        await apiClient.post<UserInfo>(`api/users/signin`, {
+        await apiClient.post<UserInfo>(`api/v1/auth/signin`, {
           email,
           password,
         })
       ).data,
   })
-
+  // https://ecommerce.routemisr.com/api/v1/auth/signin
 export const useSignupMutation = () =>
   useMutation({
     mutationFn: async ({
@@ -31,7 +31,7 @@ export const useSignupMutation = () =>
       password: string
     }) =>
       (
-        await apiClient.post<UserInfo>(`api/users/signup`, {
+        await apiClient.post<UserInfo>(`api/v1/auth/signup`, {
           name,
           email,
           password,
@@ -50,8 +50,9 @@ export const useUpdateProfileMutation = () =>
       email: string
       password: string
     }) =>
+       // this need to phone no pa
       (
-        await apiClient.put<UserInfo>(`api/users/profile`, {
+        await apiClient.put<UserInfo>(`api/v1/users/updateMe/`, {
           name,
           email,
           password,
