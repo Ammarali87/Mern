@@ -9,6 +9,9 @@ import { Provider } from "react-redux";
 import store from "./store/store.ts";
 import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import SignUp from "./pages/SignIn.tsx";
+import CartPage from "./pages/CartPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +22,9 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage/> },
       { path: "products/:id", element: <ProductPage/> },
+      { path: "signIn", element: <SignUp/> },
+      { path: "signUp", element: <SignIn/> },
+      { path: "cart", element: <CartPage/> },
     ],
   },
   {

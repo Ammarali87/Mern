@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export  type ModeState = 'light' | 'dark';
+export type ModeState = 'light' | 'dark';
 
 const initialState: ModeState = 
   (localStorage.getItem('mode') as ModeState) || 'light';

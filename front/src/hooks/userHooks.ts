@@ -1,24 +1,60 @@
+import { useMutation } from '@tanstack/react-query'
+import apiClient from "../ApiClient"
+import { UserInfo } from '../types/UserInfo'
 
-import { useQuery } from '@tanstack/react-query'
-import apiClient from '../ApiClient'
-import { Product } from '../types/Product'
-
-export const useGetProductsQuery = () =>
-  useQuery({
-    queryKey: ['products'],
-    queryFn: async () => (await apiClient.get<Product[]>(`/products`)).data,
+export const useSigninMutation = () =>
+  useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string
+      password: string
+    }) =>
+      (             
+        await apiClient.post<UserInfo>(`api/users/signin`, {
+          email,
+          password,
+        })
+      ).data,
   })
 
-export const useGetProductDetailsBySlugQuery = (slug: string) =>
-  useQuery({
-    queryKey: ['products', slug],
-    queryFn: async () =>
-      (await apiClient.get<Product>(`/products/slug/${slug}`)).data,
+export const useSignupMutation = () =>
+  useMutation({
+    mutationFn: async ({
+      name,
+      email,
+      password,
+    }: {
+      name: string
+      email: string
+      password: string
+    }) =>
+      (
+        await apiClient.post<UserInfo>(`api/users/signup`, {
+          name,
+          email,
+          password,
+        })
+      ).data,
   })
 
-export const useGetCategoriesQuery = () =>
-  useQuery({
-    queryKey: ['categories'],
-    queryFn: async () =>
-      (await apiClient.get<[]>(`/products/categories`)).data,
+export const useUpdateProfileMutation = () =>
+  useMutation({
+    mutationFn: async ({
+      name,
+      email,
+      password,
+    }: {
+      name: string
+      email: string
+      password: string
+    }) =>
+      (
+        await apiClient.put<UserInfo>(`api/users/profile`, {
+          name,
+          email,
+          password,
+        })
+      ).data,
   })

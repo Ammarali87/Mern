@@ -24,7 +24,7 @@ mongoose
   .catch(() => {
     console.log('error mongodb')
   })
-
+  console.log('connected to mongodb')
 const app = express()
 app.use(
   cors({
