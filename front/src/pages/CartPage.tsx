@@ -41,7 +41,7 @@ export default function CartPage() {
   }
 
   const checkoutHandler = () => {
-    navigate('/signin?redirect=/shipping');
+    navigate('/signIn?redirect=/shipping');
   }
   
   // ...rest of your component code
