@@ -1,129 +1,129 @@
-import { useParams } from "react-router-dom";
-import { Row, Col, Card, ListGroup, Button, Badge } from "react-bootstrap";
-import { Helmet } from "react-helmet-async";
-import LoadingBox from "../components/LoadingBox";
-import MessageBox from "../components/MessageBox";
-import Rating from "../components/Rating";
-import { useGetProductDetailsBySlugQuery } from "../hooks/productHooks";
-import { ApiError } from "../types/ApiError";
-import { convertProductToCartItem, getError } from "../utils";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { toast } from "react-toastify";
-import { addItem } from '../store/slices/cartSlice' // Add this import
+import { useContext } from 'react'
+import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap'
+import { Helmet } from 'react-helmet-async'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import MessageBox from '../components/MessageBox'
+import { Store } from '../Store'
+import { CartItem } from '../types/Cart'
 
-export default function ProductPage() {
-  const { id } = useParams();
-  const { data: product, isLoading, error } = useGetProductDetailsBySlugQuery(id!);
-  const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.cart);
-  // const navigate = useNavigate();
+export default function CartPage() {
+  const navigate = useNavigate()
 
-  const addToCartHandler = () => {
-    const existItem = cart.cartItems.find((x) => x._id === product!._id);
-    const quantity = existItem ? existItem.quantity + 1 : 1;
-  
-    if (product!.count < quantity) {
-      toast.warn("Sorry, product is out of stock");
-    alert('Product added to cart');
-      return;
+  const {
+    state: {
+      mode,
+      cart: { cartItems },
+    },
+    dispatch,
+  } = useContext(Store)
+
+  const updateCartHandler = (item: CartItem, quantity: number) => {
+    if (item.countInStock < quantity) {
+      toast.warn('Sorry. Product is out of stock')
+      return
     }
-  
-    // Replace string-based dispatch with action creator
-    dispatch(addItem({ ...convertProductToCartItem(product!), quantity }));
-    toast.success("Product added to cart");
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...item, quantity },
+    })
   }
-
-  if (isLoading) return <LoadingBox />;
-  if (error)
-    return <MessageBox variant="danger">{getError(error as ApiError)}</MessageBox>;
-
-  if (!product) {
-    return <MessageBox variant="danger">Product Not Found</MessageBox>;
+  const checkoutHandler = () => {
+    navigate('/signin?redirect=/shipping')
+  }
+  const removeItemHandler = (item: CartItem) => {
+    dispatch({ type: 'CART_REMOVE_ITEM', payload: item })
   }
 
   return (
-    <Row className="gy-4 px-5 py-2" xs={1} sm={2} md={3} lg={2} xl={2}>
-      {/* Product Image */}
-      <Col>
-        {product.image && (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="img-fluid rounded shadow-sm"
-          />
-        )}
-      </Col>
-
-      {/* Product Details */}
-      <Col>
-        <ListGroup variant="flush">
-          <ListGroup.Item>
-            <Helmet>
-              <title>{product.name}</title>
-            </Helmet>
-            <h2>{product.name}</h2>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Rating  rating={product.rating}
-          numReviews={product.count}  />
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <strong>Price:</strong> ${product.price}
-          </ListGroup.Item>
-          <ListGroup.Item>{product.description}</ListGroup.Item>
-        </ListGroup>
-      </Col>
-
-      {/* Add to Cart Section */}
-      <Col>
-        <Card className="shadow-sm">
-          <Card.Body>
-            <ListGroup variant="flush">
-              <ListGroup.Item>
-                <Row>
-                  <Col><strong>Price:</strong></Col>
-                  <Col>${product.price}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col><strong>Status:</strong></Col>
-                  <Col>
-                    {product.count > 0 ? (
-                      <Badge bg="success">In Stock</Badge>
-                    ) : (
-                      <Badge bg="danger">Unavailable</Badge>
-                    )}
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-              {product.count > 0 && (
-                <ListGroup.Item className="text-center">
-                  <Button
-                    onClick={addToCartHandler}
-                    variant="primary"
-                    className="w-100"
-                  >
-                add to cart
-                  </Button>
+    <div>
+      <Helmet>
+        <title>Shopping Cart</title>
+      </Helmet>
+      <h1>Shopping Cart</h1>
+      <Row>
+        <Col md={8}>
+          {cartItems.length === 0 ? (
+            <MessageBox>
+              Cart is empty. <Link to="/">Go Shopping</Link>
+            </MessageBox>
+          ) : (
+            <ListGroup>
+              {cartItems.map((item: CartItem) => (
+                <ListGroup.Item key={item._id}>
+                  <Row className="align-items-center">
+                    <Col md={4}>
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="img-fluid rounded thumbnail"
+                      ></img>{' '}
+                      <Link to={`/product/${item.slug}`}>{item.name}</Link>
+                    </Col>
+                    <Col md={3}>
+                      <Button
+                        onClick={() =>
+                          updateCartHandler(item, item.quantity - 1)
+                        }
+                        variant={mode}
+                        disabled={item.quantity === 1}
+                      >
+                        <i className="fas fa-minus-circle"></i>
+                      </Button>{' '}
+                      <span>{item.quantity}</span>
+                      <Button
+                        variant={mode}
+                        onClick={() =>
+                          updateCartHandler(item, item.quantity + 1)
+                        }
+                        disabled={item.quantity === item.countInStock}
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </Button>
+                    </Col>
+                    <Col md={3}>${item.price}</Col>
+                    <Col md={2}>
+                      <Button
+                        onClick={() => removeItemHandler(item)}
+                        variant={mode}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </Col>
+                  </Row>
                 </ListGroup.Item>
-              )}
+              ))}
             </ListGroup>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
-  );
+          )}
+        </Col>
+        <Col md={4}>
+          <Card>
+            <Card.Body>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <h3>
+                    Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
+                    items) : $
+                    {cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+                  </h3>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <div className="d-grid">
+                    <Button
+                      type="button"
+                      variant="primary"
+                      onClick={checkoutHandler}
+                      disabled={cartItems.length === 0}
+                    >
+                      Proceed to Checkout
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  )
 }
-
-
-
-
-
-
-
-
-
-
-
