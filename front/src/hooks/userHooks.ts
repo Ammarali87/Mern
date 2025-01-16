@@ -1,8 +1,8 @@
-import { useMutation } from '@tanstack/react-query'
-import {apiClient2} from "../ApiClient"
-import { UserInfo } from '../types/UserInfo'
- 
-const api = apiClient2
+import { useMutation } from '@tanstack/react-query';
+import { apiClient2 } from '../ApiClient';
+import { UserInfo } from '../types/UserInfo';
+
+const API_BASE_URL = 'api/v1'; // Centralize the base URL
 
 export const useSigninMutation = () =>
   useMutation({
@@ -10,36 +10,45 @@ export const useSigninMutation = () =>
       email,
       password,
     }: {
-      email: string
-      password: string
+      email: string;
+      password: string;
     }) =>
-      (             
-        await api.post<UserInfo>(`api/v1/auth/signin`, {
+      (
+        await apiClient2.post<UserInfo>(`${API_BASE_URL}/auth/signin`, {
           email,
           password,
         })
       ).data,
-  })
-  // https://ecommerce.routemisr.com/api/v1/auth/signin
+    onError: (error) => {
+      console.error('Sign-in failed:', error);
+    },
+  });
+
 export const useSignupMutation = () =>
   useMutation({
     mutationFn: async ({
       name,
       email,
       password,
+      phone,
     }: {
-      name: string
-      email: string
-      password: string
+      name: string;
+      email: string;
+      password: string;
+      phone: string;
     }) =>
       (
-        await api.post<UserInfo>(`api/v1/auth/signup`, {
+        await apiClient2.post<UserInfo>(`${API_BASE_URL}/auth/signup`, {
           name,
           email,
           password,
+          phone,
         })
       ).data,
-  })
+    onError: (error) => {
+      console.error('Sign-up failed:', error);
+    },
+  });
 
 export const useUpdateProfileMutation = () =>
   useMutation({
@@ -48,16 +57,18 @@ export const useUpdateProfileMutation = () =>
       email,
       password,
     }: {
-      name: string
-      email: string
-      password: string
+      name: string;
+      email: string;
+      password: string;
     }) =>
-       // this need to phone no pa
       (
-        await api.put<UserInfo>(`api/v1/users/updateMe/`, {
+        await apiClient2.put<UserInfo>(`${API_BASE_URL}/users/updateMe`, {
           name,
           email,
           password,
         })
       ).data,
-  })
+    onError: (error) => {
+      console.error('Profile update failed:', error);
+    },
+  });
