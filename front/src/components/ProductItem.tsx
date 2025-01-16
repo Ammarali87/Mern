@@ -35,7 +35,7 @@ export default function ProductItem({ product }: { product: Product }) {
         <img
           src={product.image}
           className="card-img-top"
-          alt={product.title}
+          alt={product.name}
           style={{ objectFit: 'cover', height: '200px' }}
         />
       </Link>

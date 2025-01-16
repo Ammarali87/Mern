@@ -9,7 +9,6 @@ import { getError } from '../utils';
 
 export default function HomePage() {
   const { data: products, isLoading, error } = useGetProductsQuery();
-  console.log("https://ecommerce.routemisr.com/api/v1/products/6428de2adc1175abc65ca05b");
 
   return (
     <Container>

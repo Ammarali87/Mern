@@ -1,5 +1,7 @@
+import { Key, ReactNode } from "react"
 
 export type Product = {
+    title: ReactNode
     count: number
     id: Key | null | undefined
     _id: string
