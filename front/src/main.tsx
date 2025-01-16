@@ -13,6 +13,7 @@ import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
 import CartPage from "./pages/CartPage.tsx";
 import { StoreProvider } from "./Store.tsx";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const queryClient = new QueryClient();
 

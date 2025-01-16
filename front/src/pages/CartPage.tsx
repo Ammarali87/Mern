@@ -70,7 +70,7 @@ export default function CartPage() {
                       >
                         <i className="fas fa-minus-circle"></i>
                       </Button>{' '}
-                      <span>{item.quantity}</span>
+                      <span className='m-5 bold text-warning'>{" "}{item.quantity}</span>
                       <Button
                         variant={mode}
                         onClick={() =>
