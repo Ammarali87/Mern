@@ -1,85 +1,165 @@
-import { useEffect, useState } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import LoadingBox from '../components/LoadingBox';
-import { useSigninMutation } from '../hooks/userHooks';
-import { ApiError } from '../types/ApiError';
-import { useDispatch, useSelector } from 'react-redux';
-import { signIn } from '../store/slices/userSlice';
- import { getError } from '../utils';
-import { RootState } from '../store/store';
+import { useFormik } from "formik";
+import  { useState } from 'react';
+import * as yup from 'yup';
+import axios from 'axios';
+// import { AuthorContext } from "../Mycontex/Authorcontext";
+import { useNavigate } from "react-router-dom";
+// import { Store } from "../Store";
+// import { useContext } from "react";
 
-export default function SigninPage() {
+export default function Register() {
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const dispatch = useDispatch();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl || '/';
+  // const { state, dispatch } = useContext(Store);  
+  // const { isLoggedIn, userInfo } = state;  
+    const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const validationSchema = yup.object({
+    name: yup.string().min(3, "3 characters at least").max(22, "Max is 22 characters").required("This is required"),
+    email: yup.string().min(3, "3 characters at least").max(22, "Max is 22 characters").required("This is required").matches(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/, "Email is not valid"),
+    phone: yup.string().min(5, "5 characters at least").max(22, "Max is 22 characters").required("This is required").matches(/\d{5,}/, "Phone number must have at least 5 digits"),
+    password: yup.string().min(3, "3 characters at least").max(22, "Max is 22 characters").required("This is required").matches(/\d{3,}/, "Password must have at least 3 digits"),
+    rePassword: yup.string().min(3, "3 characters at least").max(22, "Max is 22 characters").required("This is required").oneOf([yup.ref('password'), null], "Passwords must match"),
+  });
 
-  const { user, isLoggedIn } = useSelector((state: RootState) => state.user as { user: any; isLoggedIn: boolean });
+  const onSubmit = async (values: any) => {
+    setLoading(true);
+    setErrorMessage("");
+    console.log("Form values:", values); // Log form values
 
-  useEffect(() => {
-    if (isLoggedIn && user) {
-      navigate(redirect);
-    }
-  }, [isLoggedIn, user, navigate, redirect]);
-             
-  // update loading to status
-
-  const { mutateAsync: signin, status } = useSigninMutation();
-
-  const submitHandler = async (e: React.FormEvent) => {
-    e.preventDefault();
     try {
-      const data = await signin({ email, password });
-      dispatch(signIn(data));
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      alert('Sign in successfully');
-      navigate(redirect);
-    } catch (err) {
-      toast.error(getError(err as ApiError));
+      const res = await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup", values);
+      console.log("Sign up successful, user ID:", res.data.id);
+      localStorage.setItem("token", res.data.token);
+      navigate("/signUp");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Sign up error:", error.response ? error.response.data : error.message); // Improved error logging
+        setErrorMessage((error as any).response?.data?.message || "An error occurred during registration.");
+      } else {
+        console.error("Sign up error:", error);
+        setErrorMessage("An error occurred during registration.");
+      }
+      setErrorMessage((error as any).response?.data?.message || "An error occurred during registration.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      rePassword: "",
+      email: "", 
+      phone: "",
+      password: "",
+    },
+    onSubmit: onSubmit,
+    validationSchema: validationSchema,
+  });
+
   return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Sign In</title>
-      </Helmet>
-      <h1 className="my-3">Sign In</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
+    <div className="signup text-center mt-[37%]">
+      <form onSubmit={formik.handleSubmit}>
+        <div className="mb-5">
+          <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
+          <input
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.name}
+            type="text"
+            id="name"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="name"
+            required
+          />
+          {formik.touched.name && formik.errors.name && <p className="mt-2 rounded text-white bg-red-500">{formik.errors.name}</p>}
+        </div>
+
+        <div className="mb-5">
+          <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+          <input
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
             type="email"
+            id="email"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="name@flowbite.com"
             required
-            onChange={(e) => setEmail(e.target.value)}
           />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
+          {formik.touched.email && formik.errors.email && <p className="mt-2 rounded text-white bg-red-500">{formik.errors.email}</p>}
+        </div>
+
+        <div className="mb-5">
+          <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your phone</label>
+          <input
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.phone}
+            type="number"
+            id="phone"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            placeholder="phone"
+            required
+          />
+          {formik.touched.phone && formik.errors.phone && <p className="mt-2 rounded text-white bg-red-500">{formik.errors.phone}</p>}
+        </div>
+
+        <div className="mb-5">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
+          <input
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
             type="password"
+            id="password"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
-            onChange={(e) => setPassword(e.target.value)}
           />
-        </Form.Group>
-        <div className="mb-3">
-          <Button disabled={status === 'pending'} type="submit">
-            Sign In
-          </Button>
-          {status === 'pending' && <LoadingBox />}
+          {formik.touched.password && formik.errors.password && <p className="mt-2 rounded text-white bg-red-500">{formik.errors.password}</p>}
         </div>
-        <div className="mb-3">
-          New customer?{' '}
-          <Link to={`/signUp`}>Create your account</Link>
+
+        <div className="mb-5">
+          <label htmlFor="rePassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+          <input
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.rePassword}
+            type="password"
+            id="rePassword"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+            required
+          />
+          {formik.touched.rePassword && formik.errors.rePassword && <p className="mt-2 rounded text-white bg-red-500">{formik.errors.rePassword}</p>}
         </div>
-      </Form>
-    </Container>
+
+        <div className="flex items-start mb-5">
+          <div className="flex items-center h-5">
+            <input
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              id="terms"
+              type="checkbox"
+              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+              required
+            />
+          </div>
+          <label htmlFor="terms" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+            I agree with the <a href="#" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>
+          </label>
+        </div>
+
+        {errorMessage && <p className="mt-2 rounded text-white bg-red-500">{errorMessage}</p>}
+        {loading && <p className="mt-2 text-blue-500">Loading...</p>}
+
+        <button
+          type="submit"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Register new account
+        </button>
+      </form>
+    </div>
   );
 }

@@ -44,36 +44,6 @@ app.get('*', (req: Request, res: Response) =>
   res.sendFile(path.join(__dirname, '../../front/index.html')) // Make sure index.html is being served
 )
 
-productRouter.post(
-  '/cart',
-  asyncHandler(async (req: Request, res: Response) => {
-    const { userId, productId, quantity } = req.body
-    const product = await ProductModel.findById(productId)
-
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
-    }
-
-    let cart = await CartModel.findOne({ user: userId })
-
-    if (!cart) {
-      cart = new CartModel({
-        user: userId,
-        items: [{ productId, quantity }],
-      })
-    } else {
-      const item = cart.items.find((x) => x.productId.toString() === productId)
-      if (item) {
-        item.quantity += quantity
-      } else {
-        cart.items.push({ productId, quantity })
-      }
-    }
-
-    await cart.save()
-    res.status(200).json(cart)
-  })
-)
 
 const PORT: number = parseInt((process.env.PORT || '4000') as string, 10)
 
@@ -89,3 +59,34 @@ function asyncHandler(
     fn(req, res).catch(next) // Pass errors to the default error handler
   }
 }
+
+// productRouter.post(
+//   '/cart',
+//   asyncHandler(async (req: Request, res: Response) => {
+//     const { userId, productId, quantity } = req.body
+//     const product = await ProductModel.findById(productId)
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' })
+//     }
+
+//     let cart = await CartModel.findOne({ user: userId })
+
+//     if (!cart) {
+//       cart = new CartModel({
+//         user: userId,
+//         items: [{ productId, quantity }],
+//       })
+//     } else {
+//       const item = cart.items.find((x) => x.productId.toString() === productId)
+//       if (item) {
+//         item.quantity += quantity
+//       } else {
+//         cart.items.push({ productId, quantity })
+//       }
+//     }
+
+//     await cart.save()
+//     res.status(200).json(cart)
+//   })
+// )

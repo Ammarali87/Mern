@@ -1,58 +1,46 @@
 import { useEffect, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import { signUp } from '../store/slices/userSlice';
+import LoadingBox from '../components/LoadingBox';
+import { useSigninMutation } from '../hooks/userHooks';
 import { ApiError } from '../types/ApiError';
-import { getError } from '../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { signIn } from '../store/slices/userSlice';
+ import { getError } from '../utils';
 import { RootState } from '../store/store';
-import axios from 'axios';
 
-// SignupPage Component
-export default function SignupPage() {
+export default function SigninPage() {
   const navigate = useNavigate();
+  const { search } = useLocation();
   const dispatch = useDispatch();
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl || '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [name, setName] = useState('');
 
-  const { user, isLoggedIn } = useSelector(
-    (state: RootState) => state.user as { user: any; isLoggedIn: boolean }
-  );
+  const { user, isLoggedIn } = useSelector((state: RootState) => state.user as { user: any; isLoggedIn: boolean });
 
   useEffect(() => {
     if (isLoggedIn && user) {
-      navigate('/');
+      navigate(redirect);
     }
-  }, [isLoggedIn, user, navigate]);
+  }, [isLoggedIn, user, navigate, redirect]);
+             
+  // update loading to status
+
+  const { mutateAsync: signin, status } = useSigninMutation();
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      toast.error('Name is required');
-      return;
-    }
-    if (!phone.trim() || phone.length < 10) {
-      toast.error('Valid phone number is required');
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
     try {
-      const data = await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup", {
-        name, email, phone, password,
-      });
-      dispatch(signUp({ name, email, phone, password, userInfo: data }));
+      const data = await signin({ email, password });
+      dispatch(signIn(data));
       localStorage.setItem('userInfo', JSON.stringify(data));
-      toast.success('Sign up successfully');
-      navigate('/');
+      alert('Sign in successfully');
+      navigate(redirect);
     } catch (err) {
       toast.error(getError(err as ApiError));
     }
@@ -61,35 +49,16 @@ export default function SignupPage() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Sign Up</title>
+        <title>Sign In</title>
       </Helmet>
-      <h1 className="my-3">Sign Up</h1>
+      <h1 className="my-3">Sign In</h1>
       <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            required
-            placeholder="Enter your name"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Form.Group>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
             required
-            placeholder="Enter your email"
             onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="phone">
-          <Form.Label>Phone</Form.Label>
-          <Form.Control
-            type="text"
-            required
-            placeholder="Enter your phone number"
-            onChange={(e) => setPhone(e.target.value)}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="password">
@@ -97,28 +66,26 @@ export default function SignupPage() {
           <Form.Control
             type="password"
             required
-            placeholder="Enter your password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            placeholder="Confirm your password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
         <div className="mb-3">
-          <Button type="submit">
-            Sign Up
+          <Button disabled={status === 'pending'} type="submit">
+            Sign In
           </Button>
+          {status === 'pending' && <LoadingBox />}
         </div>
         <div className="mb-3">
-          Already have an account? <Link to="/signin">Sign In</Link>
+          New customer?{' '}
+          <Link to={`/signUp`}>Create your account</Link>
         </div>
       </Form>
     </Container>
   );
 }
+
+
+
+
+
+

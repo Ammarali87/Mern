@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Badge, Button, Card, Col, ListGroup, Row } from 'react-bootstrap'
 import { Helmet } from 'react-helmet-async'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
@@ -48,6 +48,13 @@ export default function ProductPage() {
     <MessageBox variant="danger">Product Not Found</MessageBox>
   ) : (
     <div>
+
+            <div className="cart mx-6">
+              <Link to="/cart" className="btn btn-outline-dark mx-7">
+                   see Cart
+                  </Link>
+              </div>
+
       <Row className="my-3">
         <Col md={6}>
           <img className="img-fluid rounded" src={product.image} alt={product.name} />

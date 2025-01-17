@@ -1,3 +1,4 @@
+
 .navbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -22,3 +23,13 @@ Footer {
 Footer a , li  {
   color: aliceblue !important;
 }
+
+.signup{
+  max-width: 40%;
+  max-height: 40%;
+  margin-inline: auto ;
+}
+ .signup input{
+  margin-block: -.1rem;
+ }
+ .signup
