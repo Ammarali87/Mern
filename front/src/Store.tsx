@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, PropsWithChildren, Dispatch } from 'react';
+import  { useReducer, createContext, PropsWithChildren, Dispatch } from 'react';
 import { Cart, CartItem, ShippingAddress } from './types/Cart';
 import { UserInfo } from './types/UserInfo';
 
@@ -54,14 +54,14 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, mode: newMode };
 
     case 'CART_ADD_ITEM': {
-      const newItem = action.payload;
-      const cartItems = state.cart.cartItems.some((item) => item._id === newItem._id)
-        ? state.cart.cartItems.map((item) =>
-            item._id === newItem._id ? newItem : item
-          )
-        : [...state.cart.cartItems, newItem];
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-      return { ...state, cart: { ...state.cart, cartItems } };
+      // const newItem = action.payload;
+      // const cartItems = state.cart.cartItems.some((item) => item._id === newItem._id)
+      //   ? state.cart.cartItems.map((item) =>
+      //       item._id === newItem._id ? newItem : item
+      //     )
+      //   : [...state.cart.cartItems, newItem];
+      // localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      // return { ...state, cart: { ...state.cart, cartItems } };
     }
 
     case 'CART_REMOVE_ITEM': {

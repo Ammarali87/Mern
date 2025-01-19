@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
+import Categories from "./pages/Categories.tsx";
 import CartPage from "./pages/CartPage.tsx";
 import { StoreProvider } from "./Store.tsx";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage/> },
       { path: "products/:id", element: <ProductPage/> },
+      { path: "categories", element: <Categories/> },
       { path: "signUp", element: <SignUp/> },
       { path: "signIn", element: <SignIn/> },
       { path: "cart", element: <CartPage/> },

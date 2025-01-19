@@ -1,51 +1,70 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Store } from '../Store';
 
 function Navbar() {
-  const { state, dispatch } = useContext(Store);
-  const { isLoggedIn, userInfo } = state;
+  const { dispatch } = useContext(Store);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  const token = localStorage.getItem('token') ? true : false;
 
   const handleSignout = () => {
     dispatch({ type: 'USER_SIGNOUT' });
+    window.location.reload();
+  };
+
+  const toggleMenu = () => {
+    setIsMenuVisible((prev) => !prev);
   };
 
   return (
     <header>
       <nav className="navbar navbar-dark bg-dark fixed-top">
-        <div className="container">
+        <div className="container d-flex justify-content-between align-items-center">
           <a href="/" className="navbar-brand">
             Amazon Clone
           </a>
 
+          {/* Menu Toggle Button (Visible only on mobile screens) */}
+          <button
+            className="btn btn-outline-light d-md-none"
+            onClick={toggleMenu}
+          >
+            Menu
+          </button>
+
           {/* Navbar Links */}
-          <div className="d-flex">
-            {/* Home link */}
+          <div
+            id="navbar"
+            className={`${
+              isMenuVisible ? 'd-block' : 'd-none'
+            }  d-md-flex flex-column flex-md-row gap-2 mt-2 mt-md-0`}
+          >
             <a href="/" className="btn btn-outline-light mx-2">
               Home
             </a>
-
-            {/* Categories link */}
             <a href="/categories" className="btn btn-outline-light mx-2">
               Categories
             </a>
-
-            {/* Cart link */}
             <a href="/cart" className="btn btn-outline-light mx-2">
               Cart
             </a>
-
-            {/* Conditionally render content based on the user's login status */}
-            {isLoggedIn ? (
-              <div className="navbar-text">
-                <span className="text-light me-2">Welcome, {userInfo?.name}</span>
-                <button className="btn btn-outline-light" onClick={handleSignout}>
-                  Sign Out
-                </button>
-              </div>
+            <span className="text-light mx-3 bg-warning p-1 btn">Welcome!</span>
+            {token ? (
+              <button
+                className="btn mt-2 btn-outline-light mx-2"
+                onClick={handleSignout}
+              >
+                Sign Out
+              </button>
             ) : (
-              <a href="/signin" className="btn btn-outline-light">
-                Sign In
-              </a>
+              <>
+                <a href="/signUp" className="btn mx-2 btn-outline-light">
+                  Sign In
+                </a>
+                <a href="/signIn" className="btn btn-outline-light mx-2">
+                  Sign Up
+                </a>
+              </>
             )}
           </div>
         </div>
